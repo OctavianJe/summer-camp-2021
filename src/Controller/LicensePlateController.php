@@ -17,7 +17,7 @@ class LicensePlateController extends AbstractController
     public function index(LicensePlateRepository $licensePlateRepository): Response
     {
         return $this->render('license_plate/index.html.twig', [
-            'license_plates' => $licensePlateRepository->findAll(),
+            'license_plates' => $licensePlateRepository->findBy(['user' => $this->getUser()]),
         ]);
     }
 
@@ -29,7 +29,11 @@ class LicensePlateController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+//            $form->setUser();
+//           dd($this->getUser());
+
             $entityManager = $this->getDoctrine()->getManager();
+            $licensePlate->setUser($this->getUser());
             $entityManager->persist($licensePlate);
             $entityManager->flush();
 
