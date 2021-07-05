@@ -7,7 +7,7 @@ use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -43,23 +43,24 @@ class SecurityController extends AbstractController
     /**
      * @Route("/register", name="app_register")
      */
-    public function new(Request $request, UserPasswordHasherInterface $passwordHasher): Response
+    public function new(Request $request, UserPasswordHasherInterface $passwordHasher, MailerController $mail, MailerInterface $mailer): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-//            $form->setUser();
-//            dd($this->getUser());
             $entityManager = $this->getDoctrine()->getManager();
 
-            $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
+            //Generate a random password
+            $password = substr(sha1(time()), 0, rand(8, 12));
+
+            $user->setPassword($passwordHasher->hashPassword($user, $password));
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('home');
+            return $mail->sendEmail($mailer, $user, $password);
         }
 
         return $this->render('user/new.html.twig', [

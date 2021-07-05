@@ -29,9 +29,6 @@ class LicensePlateController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-//            $form->setUser();
-//           dd($this->getUser());
-
             $entityManager = $this->getDoctrine()->getManager();
             $licensePlate->setUser($this->getUser());
             $entityManager->persist($licensePlate);
