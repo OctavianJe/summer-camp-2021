@@ -7,7 +7,7 @@ use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
+use App\Service\MailerService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -43,7 +43,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/register", name="app_register")
      */
-    public function new(Request $request, UserPasswordHasherInterface $passwordHasher, MailerController $mail, MailerInterface $mailer): Response
+    public function new(Request $request, UserPasswordHasherInterface $passwordHasher, MailerService $mail): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -60,7 +60,8 @@ class SecurityController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $mail->sendEmail($mailer, $user, $password);
+            $mail->sendEmail($user, $password);
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('user/new.html.twig', [

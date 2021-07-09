@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Activity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -49,32 +50,32 @@ class ActivityRepository extends ServiceEntityRepository
     */
 
     /**
-    * @return Activity[] Returns an array of Activity objects
-    */
-    public function findByBlocker($value): array
+     * @param $value
+     * @return Activity|null Returns an Activity object
+     * @throws NonUniqueResultException
+     */
+    public function findByBlocker($value): ?Activity
     {
         return $this->createQueryBuilder('l')
             ->andWhere('l.blocker = :val')
             ->setParameter('val', $value)
-    //        ->orderBy('l.id', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
+            ->getOneOrNullResult()
             ;
     }
 
     /**
-     * @return Activity[] Returns an array of Activity objects
+     * @param $value
+     * @return Activity|null Returns an Activity object
+     * @throws NonUniqueResultException
      */
-    public function findByBlockee($value): array
+    public function findByBlockee($value): ?Activity
     {
         return $this->createQueryBuilder('l')
             ->andWhere('l.blockee = :val')
             ->setParameter('val', $value)
-    //        ->orderBy('l.id', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
+            ->getOneOrNullResult()
             ;
     }
 }
