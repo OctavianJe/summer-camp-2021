@@ -1,11 +1,18 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
 {% extends 'base.html.twig' %}
 
 {% block title %}New LicensePlate{% endblock %}
 
 {% block body %}
-    <h1>Create new LicensePlate</h1>
-
-    {{ include('license_plate/_form.html.twig') }}
-
-    <a href="{{ path('license_plate_index') }}">back to list</a>
+    <div class="d-flex align-items-center justify-content-center">
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Add a new license plate</h3>
+                </div>
+                {{ include('license_plate/_form.html.twig') }}
+            </div>
+            <a href="{{ path('license_plate_index') }}">Back to license plates</a>
+        </div>
+    </div>
 {% endblock %}

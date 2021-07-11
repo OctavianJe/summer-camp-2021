@@ -36,7 +36,12 @@ class Activity
      *
      * @ORM\Column(name="status", type="integer", nullable=false)
      */
-    private $status = '0';
+    private int $status;
+
+    public function __construct()
+    {
+        $this->status = 0;
+    }
 
     public function getBlocker(): ?string
     {

@@ -1,11 +1,18 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
 {% extends 'base.html.twig' %}
 
-{% block title %}New ...{% endblock %}
+{% block title %}Blockee report{% endblock %}
 
 {% block body %}
-    <h1>Create new blockee report</h1>
-
-    {{ include('activity/_form.html.twig') }}
-
-    <a href="{{ path('home') }}">back to home</a>
+    <div class="d-flex align-items-center justify-content-center">
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Create a new blockee report</h3>
+                </div>
+                {{ include('activity/_form.html.twig') }}
+            </div>
+            <a href="{{ path('home') }}">Cancel request</a>
+        </div>
+    </div>
 {% endblock %}

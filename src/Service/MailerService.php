@@ -41,6 +41,12 @@ class MailerService
         $this->mailer->send($email);
     }
 
+    /**
+     * @param User $blocker
+     * @param User $blockee
+     * @param string $license_plate
+     * @throws TransportExceptionInterface
+     */
     public function sendBlockerEmail(User $blocker, User $blockee, string $license_plate)
     {
         $email = (new TemplatedEmail())
@@ -57,6 +63,12 @@ class MailerService
         $this->mailer->send($email);
     }
 
+    /**
+     * @param User $blocker
+     * @param User $blockee
+     * @param string $license_plate
+     * @throws TransportExceptionInterface
+     */
     public function sendBlockeeEmail(User $blocker, User $blockee, string $license_plate)
     {
         $email = (new TemplatedEmail())

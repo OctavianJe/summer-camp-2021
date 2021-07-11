@@ -1,4 +1,20 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+{{ form_widget(form)}}
+
+<div class="row">
+    <div class="col-8">
+        <div class="icheck-primary">
+            <input type="checkbox" id="agreeTerms" name="terms" value="agree">
+            <label for="agreeTerms">
+                I agree to the <a href="#">terms</a>
+            </label>
+        </div>
+        <div class="col-8">
+            <button type="submit" class="btn btn-primary btn-block">{{ button_label|default('Register') }}</button>
+        </div>
+    </div>
+</div>
+
 {{ form_end(form) }}
