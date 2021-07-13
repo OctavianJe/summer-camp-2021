@@ -1,10 +1,10 @@
 {% form_theme form 'bootstrap_5_layout.html.twig' %}
 {% extends 'base.html.twig' %}
 
-{% block title %}New LicensePlate{% endblock %}
+{% block title %}Add New License Plate - Who Blocked Me?{% endblock %}
 
 {% block body %}
-    <div class="d-flex align-items-center justify-content-center">
+    <div class="d-flex align-items-center justify-content-center" style="padding: 10px;">
         <div class="col-md-6">
             <div class="card card-primary">
                 <div class="card-header">
@@ -12,7 +12,7 @@
                 </div>
                 {{ include('license_plate/_form.html.twig') }}
             </div>
-            <a href="{{ path('license_plate_index') }}">Back to license plates</a>
+            <a href="{{ path('license-plate/index') }}">Back to license plates</a>
         </div>
     </div>
 {% endblock %}

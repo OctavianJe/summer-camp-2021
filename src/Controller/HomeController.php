@@ -29,4 +29,20 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
         ]);
     }
+
+    #[Route('/faq', name: 'faq')]
+    public function getFAQ(): Response
+    {
+        return $this->render('home/faq.html.twig', [
+            'controller_name' => 'HomeController',
+        ]);
+    }
+
+    #[Route('/contact-us', name: 'contact-us')]
+    public function contactUs(): Response
+    {
+        return $this->render('home/contact_us.html.twig', [
+            'controller_name' => 'HomeController',
+        ]);
+    }
 }

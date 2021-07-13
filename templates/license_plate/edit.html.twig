@@ -1,13 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit LicensePlate{% endblock %}
+{% block title %}Edit License Plate - Who Blocked Me?{% endblock %}
 
 {% block body %}
-    <h1>Edit LicensePlate</h1>
-
-    {{ include('license_plate/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('license_plate_index') }}">back to list</a>
-
-    {{ include('license_plate/_delete_form.html.twig') }}
+    <div class="d-flex align-items-center justify-content-center" style="padding: 10px;">
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Edit license plate</h3>
+                </div>
+                {{ include('license_plate/_form.html.twig') }}
+            </div>
+            <a href="{{ path('license-plate/index') }}">Back to license plates</a>
+        </div>
+    </div>
 {% endblock %}

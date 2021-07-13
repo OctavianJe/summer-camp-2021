@@ -16,10 +16,10 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\UnicodeString;
 
-#[Route('/license/plate')]
+#[Route('/user/license-plate')]
 class LicensePlateController extends AbstractController
 {
-    #[Route('/', name: 'license_plate_index', methods: ['GET'])]
+    #[Route('/', name: 'license-plate/index', methods: ['GET'])]
     public function index(LicensePlateRepository $licensePlateRepository): Response
     {
         return $this->render('license_plate/index.html.twig', [
@@ -30,7 +30,7 @@ class LicensePlateController extends AbstractController
     /**
      * @throws NonUniqueResultException|TransportExceptionInterface
      */
-    #[Route('/new', name: 'license_plate_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'license-plate/new', methods: ['GET', 'POST'])]
     public function new(Request $request, ActivityService $activity, MailerService $mailer, LicensePlateRepository $licensePlateRepository, LicensePlateService $licensePlateService): Response
     {
         $licensePlate = new LicensePlate();
@@ -90,7 +90,7 @@ class LicensePlateController extends AbstractController
                     }
                 }
 
-                return $this->redirectToRoute('license_plate_index');
+                return $this->redirectToRoute('license-plate/index');
             }
 
             $licensePlate->setUser($this->getUser());
@@ -103,7 +103,7 @@ class LicensePlateController extends AbstractController
                 $message
             );
 
-            return $this->redirectToRoute('license_plate_index');
+            return $this->redirectToRoute('license-plate/index');
         }
 
         return $this->render('license_plate/new.html.twig', [
@@ -112,7 +112,7 @@ class LicensePlateController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'license_plate_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'license-plate/show', methods: ['GET'])]
     public function show(LicensePlate $licensePlate): Response
     {
         return $this->render('license_plate/show.html.twig', [
@@ -120,7 +120,7 @@ class LicensePlateController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'license_plate_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'license-plate/edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, LicensePlate $licensePlate, LicensePlateService $licensePlateService, ActivityService $activityService): Response
     {
         $oldLicensePlate = $licensePlate->getLicensePlate();
@@ -140,7 +140,7 @@ class LicensePlateController extends AbstractController
                     'This license plate already exists!'
                 );
 
-                return $this->redirectToRoute('license_plate_index');
+                return $this->redirectToRoute('license-plate/index');
             }
 
             $blocker = $activityService->iveBlockedSomebody($oldLicensePlate);
@@ -152,7 +152,7 @@ class LicensePlateController extends AbstractController
                     'warning',
                     "Your license plate can't be changed. It already exists in a report."
                 );
-                return $this->redirectToRoute('license_plate_index');
+                return $this->redirectToRoute('license-plate/index');
             }
 
             $licensePlate->setLicensePlate($newLicensePlate);
@@ -164,7 +164,7 @@ class LicensePlateController extends AbstractController
 
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('license_plate_index');
+            return $this->redirectToRoute('license-plate/index');
         }
 
         return $this->render('license_plate/edit.html.twig', [
@@ -173,7 +173,7 @@ class LicensePlateController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'license_plate_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'license-plate/delete', methods: ['POST'])]
     public function delete(Request $request, LicensePlate $licensePlate, ActivityService $activityService): Response
     {
         $oldLicensePlate = $licensePlate->getLicensePlate();
@@ -188,7 +188,7 @@ class LicensePlateController extends AbstractController
                 "You can't delete your license plate! A report exists on your number."
             );
 
-            return $this->redirectToRoute('license_plate_index');
+            return $this->redirectToRoute('license-plate/index');
         }
 
         if ($this->isCsrfTokenValid('delete'.$licensePlate->getId(), $request->request->get('_token'))) {
@@ -203,6 +203,6 @@ class LicensePlateController extends AbstractController
             );
         }
 
-        return $this->redirectToRoute('license_plate_index');
+        return $this->redirectToRoute('license-plate/index');
     }
 }

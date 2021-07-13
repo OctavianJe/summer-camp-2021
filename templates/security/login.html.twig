@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Log in! - Who blocked me?{% endblock %}
 
 {% block body %}
     <div class="d-flex align-items-center justify-content-center">
@@ -25,9 +25,7 @@
                         <label for="inputPassword">Password</label>
                         <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
 
-                        <input type="hidden" name="_csrf_token"
-                               value="{{ csrf_token('authenticate') }}"
-                        >
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                         <div class="row">
                             <div class="checkbox mb-3">
@@ -43,9 +41,10 @@
                         </div>
                     </form>
 
-                    <p class="mb-0">
+                    <div class="mb-0" style="padding: 10px;">
+                        <a>Don't have an account?</a>
                         <a href="{{ path('app_register') }}" class="text-center">Register a new membership</a>
-                    </p>
+                    </div>
                 <!-- /.login-card-body -->
             </div>
         </div>

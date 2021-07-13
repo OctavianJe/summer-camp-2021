@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New User{% endblock %}
+{% block title %}Register - Who blocked me?{% endblock %}
 
 {% block body %}
 <div class="d-flex align-items-center justify-content-center">
@@ -8,7 +8,10 @@
             <div class="card-body register-card-body">
                 <p class="login-box-msg">Register a new membership</p>
                 {{ include('user/_form.html.twig') }}
-                <a href="{{ path('app_login') }}" class="text-center">I already have a membership</a>
+                <div style="padding: 10px;">
+                    <a>Already have a membership? </a>
+                    <a href="{{ path('app_login') }}" class="text-center">Go to login</a>
+                </div>
             </div>
     </div>
 </div>

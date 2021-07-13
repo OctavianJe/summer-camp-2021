@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}LicensePlate index{% endblock %}
+{% block title %}My License Plate - Who Blocked Me?{% endblock %}
 
 {% block body %}
-    <div class="d-flex align-items-center justify-content-center">
+    <div class="d-flex align-items-center justify-content-center" style="padding: 10px;">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Bordered Table</h3>
+                    <h3 class="card-title">Registered License Plate</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -26,11 +26,13 @@
                             <td>{{ license_plate.id}}</td>
                             <td>{{ license_plate.licensePlate }}</td>
                             <td>
-                                TODO: add status
+                                <!--TODO: add status-->
+                                Activity
                             </td>
                             <td>
-                                <a class="badge bg-warning" href="{{ path('license_plate_edit', {'id': license_plate.id}) }}">edit</a>
-                                <a class="badge bg-danger" href="{{ path('license_plate_delete', {'id': license_plate.id}) }}">delete</a>
+                                <a class="badge bg-warning" href="{{ path('license-plate/edit', {'id': license_plate.id}) }}">edit</a>
+                                <!--<a class="badge bg-danger" href="{{ path('license-plate/delete', {'id': license_plate.id}) }}">delete</a>-->
+                                <a class="badge bg-danger" >{{ include('license_plate/_delete_form.html.twig', {'button_label': 'delete'}) }}</a>
                             </td>
                         </tr>
                         {% else %}
@@ -43,7 +45,7 @@
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer clearfix">
-                    <a href="{{ path('license_plate_new') }}">Add a new license plate</a>
+                    <a href="{{ path('license-plate/new') }}">Add a new license plate</a>
                 </div>
             </div>
             <a href="{{ path('home') }}">Return to home</a>
