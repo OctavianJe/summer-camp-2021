@@ -42,7 +42,7 @@ class ActivityBlockeeType extends AbstractType
                         'choice_label' => 'license_plate',
                         'disabled' => true,]);
         }
-        elseif ($options['multipleCars'] == true)
+        elseif ($options['oneCar'] == false)
         {
             $builder
                 ->add('blockee', EntityType::class, [
@@ -62,7 +62,6 @@ class ActivityBlockeeType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Activity::class,
             'oneCar' => false,
-            'multipleCars' =>false,
         ]);
     }
 }

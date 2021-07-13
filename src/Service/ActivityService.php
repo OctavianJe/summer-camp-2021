@@ -12,7 +12,7 @@ class ActivityService
     /**
      * @var ActivityRepository
      */
-    protected $activityRepo;
+    protected $activityRepository;
     private EntityManagerInterface $em;
 
     /**
@@ -21,38 +21,32 @@ class ActivityService
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->activityRepo = $em->getRepository(Activity::class);
+        $this->activityRepository = $em->getRepository(Activity::class);
     }
 
-    /**
-     * @param string $licensePlate
-     * @return string|null
-     * @throws NonUniqueResultException
-     */
-    public function iveBlockedSomebody(string $licensePlate): ?string
-    {
-        $blocker = $this->activityRepo->findByBlocker($licensePlate);
 
-        if ($blocker instanceof Activity)
+    public function iveBlockedSomebody(string $licensePlate): ?array
+    {
+        $blockees = $this->activityRepository->findByBlocker($licensePlate);
+
+        if(count($blockees) == 0)
         {
-            return $blocker->getBlockee();
+            return null;
         }
-        return '';
+
+        return $blockees;
     }
 
-    /**
-     * @param string $licensePlate
-     * @return string|null
-     * @throws NonUniqueResultException
-     */
-    public function whoBlockedMe(string $licensePlate): ?string
-    {
-        $blocker = $this->activityRepo->findByBlockee($licensePlate);
 
-        if ($blocker instanceof Activity)
+    public function whoBlockedMe(string $licensePlate): ?array
+    {
+        $blockers = $this->activityRepository->findByBlockee($licensePlate);
+
+        if(count($blockers) == 0)
         {
-            return $blocker->getBlocker();
+            return null;
         }
-        return '';
+
+        return $blockers;
     }
 }

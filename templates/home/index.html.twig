@@ -1,11 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Homepage - Who Blocked Me?{% endblock %}
 
 {% block head %}
-    <link href="css/custom.css" rel="stylesheet" type="text/css">
 
-    <script src="js/custom.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -16,13 +14,11 @@
 </style>
 
 <div class="example-wrapper">
-    <div>
-        <button onclick="location.href='/license/plate'" type="button">My cars</button>
-        <button onclick="location.href='/ive_blocked_someone_new'" type="button">I've blocked someone</button>
-        <button onclick="location.href='/ive_been_blocked_new'" type="button">Someone blocked me</button>
-        <button onclick="location.href='/password/change'" type="button">Change password</button>
-        <button onclick="location.href='/logout'" type="button">Logout</button>
-    </div>
+    <a class="btn btn-primary btn-lg" href="{{ path('license_plate_index') }}">My cars</a>
+    <a class="btn btn-primary btn-lg" href="{{ path('ive_blocked_someone') }}">I've blocked someone</a>
+    <a class="btn btn-primary btn-lg" href="{{ path('ive_been_blocked') }}">Someone blocked me</a>
+    <a class="btn btn-primary btn-lg" href="{{ path('change_password') }}">Change password</a>
+    <a class="btn btn-primary btn-lg" href="{{ path('app_logout') }}">Logout</a>
 </div>
 
 {% endblock %}

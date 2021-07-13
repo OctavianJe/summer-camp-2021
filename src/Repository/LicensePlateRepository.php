@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\LicensePlate;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +19,17 @@ class LicensePlateRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, LicensePlate::class);
+    }
+
+    /**
+     * @param User $user
+     * @return QueryBuilder Returns an array of LicensePlate objects
+     */
+    public function findByUser(User $user): QueryBuilder
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.user = :val')
+            ->setParameter('val', $user);
     }
 
     // /**

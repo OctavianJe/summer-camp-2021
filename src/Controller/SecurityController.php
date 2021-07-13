@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\ChangePasswordType;
 use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -72,75 +73,5 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/password/change', name: 'change_password', methods: ['GET', 'POST'])]
-    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, SecurityController $security) : Response
-    {
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
-        $form->add('old_password', PasswordType::class, array('mapped' => false));
-        $form->add('new_password', PasswordType::class, array('mapped' => false));
-        $form->add('retype_new_password', PasswordType::class, array('mapped' => false));
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $oldPassword = $form->get('old_password')->getData();
-            $newPassword = $form->get('new_password')->getData();
-            $retypeNewPassword = $form->get('retype_new_password')->getData();
-
-            if($user->getEmail() != $this->getUser()->getUserIdentifier())
-            {
-                $this->addFlash(
-                    'warning',
-                    "The email is not the same as the one of the already logged in user. Try again!"
-                );
-                return $this->redirectToRoute('change_password');
-            }
-
-            if(!$passwordHasher->isPasswordValid($this->getUser(), $oldPassword))
-            {
-                $this->addFlash(
-                    'warning',
-                    "The old password does not match. Try again"
-                );
-                return $this->redirectToRoute('change_password');
-            }
-
-            if($newPassword != $retypeNewPassword)
-            {
-                $this->addFlash(
-                    'warning',
-                    "The new password and its retype are different. Try again"
-                );
-                return $this->redirectToRoute('change_password');
-            }
-
-            if((new UnicodeString($newPassword))->width() < 8)
-            {
-                $this->addFlash(
-                    'warning',
-                    "The password is too short. Please use a password that has at least 8 characters!"
-                );
-                return $this->redirectToRoute('change_password');
-            }
-
-            $entityManager = $this->getDoctrine()->getManager();
-
-            $this->getUser()->setPassword($passwordHasher->hashPassword($this->getUser(), $newPassword));
-
-            $entityManager->persist($this->getUser());
-            $entityManager->flush();
-
-            $this->addFlash(
-                'success',
-                "The password has been successfully changed!"
-            );
-
-            return $this->redirectToRoute('home');
-        }
-
-        return $this->render('security/change_password.html.twig', [
-            'user' => $user,
-            'form' => $form->createView(),
-        ]);
-    }
 }
