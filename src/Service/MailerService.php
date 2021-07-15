@@ -26,16 +26,38 @@ class MailerService
      * @Route("/email", name='email')
      * @throws TransportExceptionInterface
      */
-    public function sendEmail(User $user, String $password)
+    public function sendRegistrationEmail(User $user, String $password)
     {
         $email = (new TemplatedEmail())
             ->from('contact@whoblockedme.com')
             ->to($user->getUserIdentifier())
-            ->subject('Account password for Who Blocked Me?')
+            ->subject("Account credentials for 'Who Blocked Me?'")
             ->htmlTemplate('mailer/registration_email.html.twig')
             ->context([
                 'username' => $user->getUserIdentifier(),
                 'password' => $password,
+            ]);
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * @param User $user
+     * @param string $userName
+     * @param string $userSubject
+     * @param string $userMessage
+     * @throws TransportExceptionInterface
+     */
+    public function sendContactUsEmail(User $user, string $userName, string $userSubject, string $userMessage)
+    {
+        $email = (new TemplatedEmail())
+            ->from($user->getUserIdentifier())
+            ->to('contact@whoblockedme.com')
+            ->subject("Who Blocked Me? Contact us message from ".$userName.": '".$userSubject."'")
+            ->htmlTemplate('mailer/contact_us_email.html.twig')
+            ->context([
+                'user_name' => $userName,
+                'message' => $userMessage,
             ]);
 
         $this->mailer->send($email);

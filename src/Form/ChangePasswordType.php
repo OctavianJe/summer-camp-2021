@@ -30,9 +30,9 @@ class ChangePasswordType extends AbstractType
             ->add('email', RepeatedType::class, ['type' => EmailType::class,
                 'invalid_message' => 'The email does not match.',
                 'required' => true,
+                'first_options' => ['label' => 'Email'],
                 'second_options'  => ['label' => false, 'data' => $this->security->getUser()->getUserIdentifier(), 'attr' => array('hidden' => true,
                 )],
-                'first_options' => ['label' => 'Email'],
             ])
             ->add('old_password', PasswordType::class, array('mapped' => false,
                 'label' => 'Old password',

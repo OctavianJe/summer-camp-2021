@@ -2,19 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Activity;
-use App\Entity\LicensePlate;
-use App\Form\ActivityBlockeeType;
-use App\Form\ActivityBlockerType;
-use App\Repository\ActivityRepository;
-use App\Repository\LicensePlateRepository;
-use App\Service\LicensePlateService;
+use App\Entity\User;
+use App\Form\HomeContactUsType;
 use App\Service\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\UnicodeString;
 
 class HomeController extends AbstractController
 {
@@ -39,10 +33,31 @@ class HomeController extends AbstractController
     }
 
     #[Route('/contact-us', name: 'contact-us')]
-    public function contactUs(): Response
+    public function contactUs(Request $request, MailerService $mailer): Response
     {
+        $user = new User();
+        $form = $this->createForm(HomeContactUsType::class, $user);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $userName = $form->get('name')->getData();
+            $userSubject = $form->get('subject')->getData();
+            $userMessage = $form->get('message')->getData();
+
+            $mailer->sendContactUsEmail($user, $userName, $userSubject, $userMessage);
+
+            $this->addFlash(
+                'success',
+                "An email was sent! You will be contacted soon!"
+            );
+
+            return $this->redirectToRoute('home');
+        }
+
         return $this->render('home/contact_us.html.twig', [
-            'controller_name' => 'HomeController',
+            'user' => $user,
+            'form' => $form->createView(),
         ]);
     }
 }

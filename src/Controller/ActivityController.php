@@ -50,21 +50,12 @@ class ActivityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
             $activity->setBlockee($licensePlateService->normalizeLicensePlate($activity->getBlockee()));
-            //$activity->setBlocker($licensePlateService->normalizeLicensePlate($activity->getBlocker()));
 
             $blockeeEntry = $licensePlateRepository->findOneBy(['license_plate'=>$activity->getBlockee()]);
+
             if($blockeeEntry)
             {
-//                $blockerEntry = $licensePlateRepository->findOneBy(['license_plate' => $activity->getBlocker()]);
-//                $mailer->sendBlockeeEmail($blockerEntry->getUser(), $blockeeEntry->getUser(), $blockerEntry->getLicensePlate());
-//
-//                $message = "The owner of the car ".$activity->getBlockee()." has been emailed!";
-//                $this->addFlash(
-//                    'success',
-//                    $message
-//                );
                 if($blockeeEntry->getUser())
                 {
                     $blockerEntry = $licensePlateRepository->findOneBy(['license_plate' => $activity->getBlocker()]);
@@ -152,20 +143,13 @@ class ActivityController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $activity->setBlockee($licensePlateService->normalizeLicensePlate($activity->getBlockee()));
             $activity->setBlocker($licensePlateService->normalizeLicensePlate($activity->getBlocker()));
+
             $entityManager->persist($activity);
             $entityManager->flush();
 
             $blockerEntry = $licensePlateRepository->findOneBy(['license_plate'=>$activity->getBlocker()]);
             if($blockerEntry)
             {
-//                $blockeeEntry = $licensePlateRepository->findOneBy(['license_plate' => $activity->getBlockee()]);
-//                $mailer->sendBlockerEmail($blockeeEntry->getUser(), $blockerEntry->getUser(), $blockeeEntry->getLicensePlate());
-//
-//                $message = "The owner of the car ".$activity->getBlocker()." has been emailed!";
-//                $this->addFlash(
-//                    'success',
-//                    $message
-//                );
                 if($blockerEntry->getUser()) {
                     $blockeeEntry = $licensePlateRepository->findOneBy(['license_plate' => $activity->getBlockee()]);
 
@@ -213,4 +197,5 @@ class ActivityController extends AbstractController
         ]);
 
     }
+    
 }

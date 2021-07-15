@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\MailerService;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -45,6 +46,7 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/register", name="app_register")
+     * @throws TransportExceptionInterface
      */
     public function new(Request $request, UserPasswordHasherInterface $passwordHasher, MailerService $mail): Response
     {
@@ -63,7 +65,7 @@ class SecurityController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $mail->sendEmail($user, $password);
+            $mail->sendRegistrationEmail($user, $password);
             return $this->redirectToRoute('app_login');
         }
 
@@ -72,6 +74,5 @@ class SecurityController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 
 }

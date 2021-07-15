@@ -1,12 +1,10 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
 {% extends 'base.html.twig' %}
 
 {% block title %}Contact us - Who Blocked Me?{% endblock %}
 
-{% block head %}
-
-{% endblock %}
-
 {% block body %}
+
     <div class="align-items-center justify-content-center" style="padding: 10px;">
         <div class="card">
             <div class="card-body row">
@@ -20,30 +18,9 @@
                 </div>
 
                 <div class="col-7">
-                    <div class="form-group">
-                        <label for="inputName">Name</label>
-                        <input type="text" id="inputName" class="form-control">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="inputEmail">Email</label>
-                        <input type="email" id="inputEmail" class="form-control">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="inputSubject">Subject</label>
-                        <input type="text" id="inputSubject" class="form-control">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="inputMessage">Message</label>
-                        <textarea id="inputMessage" class="form-control" rows="4"></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <input type="submit" class="btn btn-primary" value="Send message">
-                    </div>
+                    {{ include('home/contact_us_form.html.twig', {'button_label': 'Send message'}) }}
                 </div>
+
             </div>
         </div>
     </div>
