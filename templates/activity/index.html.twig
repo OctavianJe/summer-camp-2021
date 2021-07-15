@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Who blocked me? - Activities{% endblock %}
+
+{% block body %}
+    <div class="d-flex align-items-center justify-content-center" style="padding: 10px;">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">My blocker activities</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Blocker</th>
+                            <th>Blockee</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for activity in activity_blockees %}
+                            <tr>
+                                <td>{{ loop.index}}</td>
+                                <td>{{ activity.blocker }}</td>
+                                <td>{{ activity.blockee }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="3" style="text-align: center;" >You don't have any cars added yet.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">My blockee activities</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Blockee</th>
+                            <th>Blocker</th>
+                            <th style="width: 40px">Options</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for activity in activity_blockers %}
+                            <tr>
+                                <td>{{ loop.index}}</td>
+                                <td>{{ activity.blockee }}</td>
+                                <td>{{ activity.blocker }}</td>
+                                <td>
+                                    <a class="badge bg-danger">{{ include('activity/_delete_form.html.twig', {'button_label': 'solve report'}) }}</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4" style="text-align: center;" >You don't have any cars added yet.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <a href="{{ path('home') }}">Return to home</a>
+        </div>
+    </div>
+{% endblock %}
+

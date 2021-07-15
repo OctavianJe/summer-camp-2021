@@ -7,6 +7,7 @@ use App\Entity\LicensePlate;
 use App\Form\ActivityBlockeeType;
 use App\Form\ActivityBlockerType;
 use App\Repository\LicensePlateRepository;
+use App\Service\ActivityService;
 use App\Service\LicensePlateService;
 use App\Service\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +18,16 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/activity')]
 class ActivityController extends AbstractController
 {
-    #[Route('/ive_blocked_someone', name: 'ive_blocked_someone', methods: ['GET', 'POST'])]
+    #[Route('/', name: 'activity/index')]
+    public function myCarActivity (Request $request, ActivityService $activityService, LicensePlateService $licensePlateService): Response
+    {
+        return $this->render('activity/index.html.twig', [
+            'activity_blockers' => $activityService->displayLicensePlateBlockees($this->getUser(), $licensePlateService),
+            'activity_blockees' => $activityService->displayLicensePlateBlockers($this->getUser(), $licensePlateService),
+        ]);
+    }
+
+    #[Route('/new/ive_blocked_someone', name: 'activity/ive_blocked_someone', methods: ['GET', 'POST'])]
     public function iveBlockedSomeone(Request $request, LicensePlateRepository $licensePlateRepository, LicensePlateService $licensePlateService, MailerService $mailer): Response
     {
         $activity = new Activity();
@@ -56,6 +66,19 @@ class ActivityController extends AbstractController
 
             if($blockeeEntry)
             {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($activity);
+
+                try{
+                    $entityManager->flush();
+                }catch(\Exception $exception){
+                    $this->addFlash(
+                        'warning',
+                        'This activity report is already registered in our system!'
+                    );
+                    return $this->redirectToRoute('home');
+                }
+
                 if($blockeeEntry->getUser())
                 {
                     $blockerEntry = $licensePlateRepository->findOneBy(['license_plate' => $activity->getBlocker()]);
@@ -106,7 +129,7 @@ class ActivityController extends AbstractController
 
     }
 
-    #[Route('/ive_been_blocked', name: 'ive_been_blocked', methods: ['GET', 'POST'])]
+    #[Route('/new/ive_been_blocked', name: 'activity/ive_been_blocked', methods: ['GET', 'POST'])]
     public function iveBeenBlocked(Request $request, LicensePlateRepository $licensePlateRepository, LicensePlateService $licensePlateService, MailerService $mailer): Response
     {
         $activity = new Activity();
@@ -140,16 +163,24 @@ class ActivityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $activity->setBlockee($licensePlateService->normalizeLicensePlate($activity->getBlockee()));
             $activity->setBlocker($licensePlateService->normalizeLicensePlate($activity->getBlocker()));
-
-            $entityManager->persist($activity);
-            $entityManager->flush();
 
             $blockerEntry = $licensePlateRepository->findOneBy(['license_plate'=>$activity->getBlocker()]);
             if($blockerEntry)
             {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($activity);
+
+                try{
+                    $entityManager->flush();
+                }catch(\Exception $exception){
+                    $this->addFlash(
+                        'warning',
+                        'This activity report is already registered in our system!'
+                    );
+                    return $this->redirectToRoute('home');
+                }
+
                 if($blockerEntry->getUser()) {
                     $blockeeEntry = $licensePlateRepository->findOneBy(['license_plate' => $activity->getBlockee()]);
 
@@ -197,5 +228,22 @@ class ActivityController extends AbstractController
         ]);
 
     }
-    
+
+    #[Route('/{blocker}', name: 'activity/delete')]
+    public function solveActivity (Request $request, Activity $activity): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$activity->getBlocker(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($activity);
+            $entityManager->flush();
+
+            $message = 'The activity was marked as solved!';
+            $this->addFlash(
+                'success',
+                $message
+            );
+        }
+
+        return $this->redirectToRoute('activity/index');
+    }
 }

@@ -85,20 +85,21 @@
 
         {% block body %}{% endblock %}
 
-        <footer>
-            <div style="position: fixed; text-align: center; bottom: 0px; width: 100%;">
-                <span class="footer_text_copyright">
-                    <script type="text/javascript">
-                        copyright=new Date();
-                        update=copyright.getFullYear();
-                        document.write("&copy; "+ update + " Who Blocked Me?");
-                    </script>
-                    <p>Author: Ploscaru Octavian Gabriel</p>
-                    <p>Contact at <a href="mailto:octavian.ploscaru13@yahoo.com">octavian.ploscaru13@yahoo.com</a></p>
-                </span>
-            </div>
-        </footer>
-
+        {% block footer %}
+            <footer>
+                <div style="text-align: center; bottom: 0px; width: 100%;">
+                    <span class="footer_text_copyright">
+                        <script type="text/javascript">
+                            copyright=new Date();
+                            update=copyright.getFullYear();
+                            document.write("&copy; "+ update + " Who Blocked Me?");
+                        </script>
+                        <p>Author: Ploscaru Octavian Gabriel</p>
+                        <p>Contact at <a href="mailto:octavian.ploscaru13@yahoo.com">octavian.ploscaru13@yahoo.com</a></p>
+                    </span>
+                </div>
+            </footer>
+        {% endblock %}
 
     </body>
 </html>

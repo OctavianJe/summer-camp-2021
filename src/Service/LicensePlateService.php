@@ -43,4 +43,20 @@ class LicensePlateService
     {
         return count($this->licensePlateRepository->findBy(['user' => $user]));
     }
+
+    /**
+     * @param User $user
+     * @return array|null
+     */
+    public function getAllLicensePlates(User $user): ?array
+    {
+        $indexLicensePlate = $this->licensePlateRepository->findBy(['user' => $user]);
+
+        foreach ($indexLicensePlate as &$licensePlates)
+        {
+            $licensePlates = $licensePlates->getLicensePlate();
+        }
+
+        return $indexLicensePlate;
+    }
 }

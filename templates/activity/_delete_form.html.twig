@@ -1,0 +1,5 @@
+<form method="post" action="{{ path('activity/delete', {'blocker': activity.blocker}) }}"
+      onsubmit="return confirm('Are you sure you want to mark the report as solved?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~activity.blocker) }}">
+    <button class="btn badge bg-danger">solve report</button>
+</form>

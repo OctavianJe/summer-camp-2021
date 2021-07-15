@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Activity;
+use App\Entity\User;
 use App\Repository\ActivityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -24,7 +25,10 @@ class ActivityService
         $this->activityRepository = $em->getRepository(Activity::class);
     }
 
-
+    /**
+     * @param string $licensePlate
+     * @return array|null
+     */
     public function iveBlockedSomebody(string $licensePlate): ?array
     {
         $blockees = $this->activityRepository->findByBlocker($licensePlate);
@@ -37,8 +41,11 @@ class ActivityService
         return $blockees;
     }
 
-
-    public function whoBlockedMe(string $licensePlate): ?array
+    /**
+     * @param string $licensePlate
+     * @return array|null
+     */
+    public function whoBlockedMe (string $licensePlate): ?array
     {
         $blockers = $this->activityRepository->findByBlockee($licensePlate);
 
@@ -49,4 +56,25 @@ class ActivityService
 
         return $blockers;
     }
+
+    /**
+     * @param User $user
+     * @param LicensePlateService $licensePlateService
+     * @return array|null
+     */
+    public function displayLicensePlateBlockers (User $user, LicensePlateService $licensePlateService): ?array
+    {
+        return $this->activityRepository->findBy(['blockee' => $licensePlateService->getAllLicensePlates($user)]);
+    }
+
+    /**
+     * @param User $user
+     * @param LicensePlateService $licensePlateService
+     * @return array|null
+     */
+    public function displayLicensePlateBlockees (User $user, LicensePlateService $licensePlateService): ?array
+    {
+        return $this->activityRepository->findBy(['blocker' => $licensePlateService->getAllLicensePlates($user)]);
+    }
+
 }

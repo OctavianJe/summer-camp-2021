@@ -13,7 +13,11 @@
     </style>
 
     <div class="example-wrapper">
-        <a type="button" class="btn btn-block bg-gradient-warning btn-lg" href="{{ path('ive_blocked_someone') }}">I've blocked someone</a>
-        <a type="button" class="btn btn-block bg-gradient-danger btn-lg" href="{{ path('ive_been_blocked') }}">Someone blocked me</a>
+        <a type="button" class="btn btn-block bg-gradient-warning btn-lg" href="{{ path('activity/ive_blocked_someone') }}">I've blocked someone</a>
+        <a type="button" class="btn btn-block bg-gradient-danger btn-lg" href="{{ path('activity/ive_been_blocked') }}">Someone blocked me</a>
+    </div>
+
+    <div class="example-wrapper" style="padding: 10px; letter-spacing: 1.1px" >
+        <a type="button" class="btn btn-block bg-gradient-info" href="{{ path('activity/index') }}">Activities</a>
     </div>
 {% endblock %}

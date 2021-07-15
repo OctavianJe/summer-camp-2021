@@ -28,7 +28,7 @@ class LicensePlateController extends AbstractController
     }
 
     /**
-     * @throws NonUniqueResultException|TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     #[Route('/new', name: 'license-plate/new', methods: ['GET', 'POST'])]
     public function new(Request $request, ActivityService $activity, MailerService $mailer, LicensePlateRepository $licensePlateRepository, LicensePlateService $licensePlateService): Response
@@ -41,6 +41,15 @@ class LicensePlateController extends AbstractController
             $licensePlate->setLicensePlate($licensePlateService->normalizeLicensePlate($licensePlate->getLicensePlate()));
 
             $entry = $licensePlateRepository->findOneBy(['license_plate' => $licensePlate->getLicensePlate()]);
+
+            if($entry && $entry->getUser() == $this->getUser())
+            {
+                $this->addFlash(
+                    'warning',
+                    'You already had added this car!'
+                );
+                return $this->redirectToRoute('license_plate_index');
+            }
 
             $entityManager = $this->getDoctrine()->getManager();
 
@@ -121,7 +130,7 @@ class LicensePlateController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'license-plate/edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, LicensePlate $licensePlate, LicensePlateService $licensePlateService, ActivityService $activityService): Response
+    public function edit(Request $request, LicensePlate $licensePlate, LicensePlateService $licensePlateService, LicensePlateRepository $licensePlateRepository, ActivityService $activityService): Response
     {
         $oldLicensePlate = $licensePlate->getLicensePlate();
 
@@ -140,6 +149,16 @@ class LicensePlateController extends AbstractController
                     'This license plate already exists!'
                 );
 
+                return $this->redirectToRoute('license-plate/index');
+            }
+
+            $entry = $licensePlateRepository->findOneBy(['license_plate' => $newLicensePlate, 'user' => $this->getUser()]);
+            if($entry)
+            {
+                $this->addFlash(
+                    'warning',
+                    'You already had added this car!'
+                );
                 return $this->redirectToRoute('license-plate/index');
             }
 
