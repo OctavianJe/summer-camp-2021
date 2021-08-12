@@ -17,6 +17,7 @@
                             <th style="width: 10px">#</th>
                             <th>Blocker</th>
                             <th>Blockee</th>
+                            <th style="width: 40px">Options</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -25,6 +26,12 @@
                                 <td>{{ loop.index}}</td>
                                 <td>{{ activity.blocker }}</td>
                                 <td>{{ activity.blockee }}</td>
+                                <!-- TODO -->
+                                <td>
+                                    {% if activity.status == 2 %}
+                                        <a class="badge bg-danger">{{ include('activity/_delete_form.html.twig', {'button_label': 'solve report'}) }}</a>
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% else %}
                             <tr>

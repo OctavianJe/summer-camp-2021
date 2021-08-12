@@ -55,6 +55,7 @@
                                     <hr class="dropdown-divider">
                                     <a class="dropdown-item" href="{{ path('change_password') }}">Change password</a>
                                     <a class="dropdown-item" href="{{ path('app_logout') }}">Log out</a>
+                                    <a class="dropdown-item" href=" {{ path('user_delete', {'id': app.user.id}) }}">Delete account</a>
                                 </div>
                             </div>
                         </li>
@@ -85,21 +86,21 @@
 
         {% block body %}{% endblock %}
 
-        {% block footer %}
-            <footer>
-                <div style="text-align: center; bottom: 0px; width: 100%;">
-                    <span class="footer_text_copyright">
-                        <script type="text/javascript">
-                            copyright=new Date();
-                            update=copyright.getFullYear();
-                            document.write("&copy; "+ update + " Who Blocked Me?");
-                        </script>
-                        <p>Author: Ploscaru Octavian Gabriel</p>
-                        <p>Contact at <a href="mailto:octavian.ploscaru13@yahoo.com">octavian.ploscaru13@yahoo.com</a></p>
-                    </span>
-                </div>
-            </footer>
-        {% endblock %}
+{#        {% block footer %}#}
+{#            <footer>#}
+{#                <div style="text-align: center; bottom: 0px; width: 100%;">#}
+{#                    <span class="footer_text_copyright">#}
+{#                        <script type="text/javascript">#}
+{#                            copyright=new Date();#}
+{#                            update=copyright.getFullYear();#}
+{#                            document.write("&copy; "+ update + " Who Blocked Me?");#}
+{#                        </script>#}
+{#                        <p>Author: Ploscaru Octavian Gabriel</p>#}
+{#                        <p>Contact at <a href="mailto:octavian.ploscaru13@yahoo.com">octavian.ploscaru13@yahoo.com</a></p>#}
+{#                    </span>#}
+{#                </div>#}
+{#            </footer>#}
+{#        {% endblock %}#}
 
     </body>
 </html>

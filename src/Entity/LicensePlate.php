@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=LicensePlateRepository::class)
+ * @ORM\HasLifecycleCallbacks
  */
 class LicensePlate
 {
@@ -59,5 +60,32 @@ class LicensePlate
     public function __toString(): string
     {
         return $this->license_plate;
+    }
+
+    /** @ORM\Column(name="created_at", type="string", length=255) */
+    private $createdAt;
+
+    /** @ORM\Column(name="updated_at", type="string", length=255) */
+    private $updatedAt;
+
+    /** @ORM\PreUpdate */
+    public function doStuffOnPreUpdate()
+    {
+        $this->updatedAt = date('Y-m-d H:i:s');
+    }
+
+    /** @ORM\PrePersist */
+    public function doStuffOnPrePersist()
+    {
+        $this->createdAt = date('Y-m-d H:i:s');
+        $this->updatedAt = date('Y-m-d H:i:s');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

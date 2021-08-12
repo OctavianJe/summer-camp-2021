@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\ChangePasswordType;
+use App\Service\LicensePlateService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -43,5 +45,32 @@ class UserController extends AbstractController
             'user' => $user,
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/{id}', name: 'user_delete', methods: ['POST'])]
+    public function delete(Request $request, User $user, LicensePlateService $licensePlateService): Response
+    {
+
+        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $licensePlateService->removeUser($user);
+
+            $entityManager->remove($user);
+
+            $session = $this->get('session');
+            $session = new Session();
+            $session->invalidate();
+
+            $entityManager->flush();
+
+            $message = 'The account was deleted!';
+            $this->addFlash(
+                'success',
+                $message
+            );
+        }
+
+        return $this->redirectToRoute('app_login');
     }
 }

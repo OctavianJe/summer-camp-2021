@@ -59,4 +59,27 @@ class LicensePlateService
 
         return $indexLicensePlate;
     }
+
+    /**
+     * @param LicensePlate $licensePlate
+     * @return float
+     */
+    public function getIntervalSeconds(LicensePlate $licensePlate): float
+    {
+        return abs(strtotime(date('Y-m-d H:i:s')) - strtotime($licensePlate->getUpdatedAt()));
+    }
+
+    /**
+     * @param User $user
+     */
+    public function removeUser(User $user)
+    {
+        $cars = $this->licensePlateRepository->findBy(['user' => $user]);
+
+        foreach ($cars as &$car)
+        {
+            $car->setUser(null);
+            $this->em->flush();
+        }
+    }
 }

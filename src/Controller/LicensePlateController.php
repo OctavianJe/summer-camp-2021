@@ -48,7 +48,7 @@ class LicensePlateController extends AbstractController
                     'warning',
                     'You already had added this car!'
                 );
-                return $this->redirectToRoute('license_plate_index');
+                return $this->redirectToRoute('license-plate/index');
             }
 
             $entityManager = $this->getDoctrine()->getManager();
@@ -66,16 +66,19 @@ class LicensePlateController extends AbstractController
                     {
                         $blockerEntry = $licensePlateRepository->findOneBy(['license_plate' => $it->getBlocker()]);
 
-                        $mailer->sendBlockeeEmail($blockerEntry->getUser(), $entry->getUser(), $blockerEntry->getLicensePlate());
+                        if($blockerEntry->getUser())
+                        {
+                            $mailer->sendBlockeeEmail($blockerEntry->getUser(), $entry->getUser(), $blockerEntry->getLicensePlate());
 
-                        $this->addFlash(
-                            'warning',
-                            "Your car has been blocked by ".$blockerEntry->getLicensePlate()."!"
-                        );
+                            $this->addFlash(
+                                'warning',
+                                "Your car has been blocked by ".$blockerEntry->getLicensePlate()."!"
+                            );
 
-                        $it->setStatus(1);
-                        $entityManager->persist($it);
-                        $entityManager->flush();
+                            $it->setStatus(1);
+                            $entityManager->persist($it);
+                            $entityManager->flush();
+                        }
                     }
                 }
 
@@ -86,16 +89,19 @@ class LicensePlateController extends AbstractController
                     {
                         $blockeeEntry = $licensePlateRepository->findOneBy(['license_plate' => $it->getBlockee()]);
 
-                        $mailer->sendBlockerEmail($blockeeEntry->getUser(), $entry->getUser(), $blockeeEntry->getLicensePlate());
+                        if($blockeeEntry->getUser())
+                        {
+                            $mailer->sendBlockerEmail($blockeeEntry->getUser(), $entry->getUser(), $blockeeEntry->getLicensePlate());
 
-                        $this->addFlash(
-                            'danger',
-                            "You blocked the car ".$blockeeEntry->getLicensePlate()."!"
-                        );
+                            $this->addFlash(
+                                'danger',
+                                "You blocked the car ".$blockeeEntry->getLicensePlate()."!"
+                            );
 
-                        $it->setStatus(1);
-                        $entityManager->persist($it);
-                        $entityManager->flush();
+                            $it->setStatus(1);
+                            $entityManager->persist($it);
+                            $entityManager->flush();
+                        }
                     }
                 }
 
@@ -140,6 +146,16 @@ class LicensePlateController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if($licensePlateService->getIntervalSeconds($licensePlate) < 864000)
+            {
+                $message = "You have recently updated this car. Try again tomorrow!";
+                $this->addFlash(
+                    'warning',
+                    $message
+                );
+                return $this->redirectToRoute('license-plate/index');
+            }
+
             $newLicensePlate = $licensePlateService->normalizeLicensePlate($licensePlate);
 
             if($oldLicensePlate == $newLicensePlate)

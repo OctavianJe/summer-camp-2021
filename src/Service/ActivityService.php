@@ -64,7 +64,7 @@ class ActivityService
      */
     public function displayLicensePlateBlockers (User $user, LicensePlateService $licensePlateService): ?array
     {
-        return $this->activityRepository->findBy(['blockee' => $licensePlateService->getAllLicensePlates($user)]);
+        return $this->activityRepository->findBy(['blockee' => $licensePlateService->getAllLicensePlates($user), 'status' => [0,1,2]]);
     }
 
     /**
@@ -74,7 +74,7 @@ class ActivityService
      */
     public function displayLicensePlateBlockees (User $user, LicensePlateService $licensePlateService): ?array
     {
-        return $this->activityRepository->findBy(['blocker' => $licensePlateService->getAllLicensePlates($user)]);
+        return $this->activityRepository->findBy(['blocker' => $licensePlateService->getAllLicensePlates($user), 'status' => [0,1,2]]);
     }
 
 }

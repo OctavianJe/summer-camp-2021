@@ -234,7 +234,7 @@ class ActivityController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete'.$activity->getBlocker(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($activity);
+            $activity->setStatus(3);
             $entityManager->flush();
 
             $message = 'The activity was marked as solved!';
