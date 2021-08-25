@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\HomeContactUsType;
+use App\Message\ContactUsEmail;
 use App\Service\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
@@ -33,7 +35,7 @@ class HomeController extends AbstractController
     }
 
     #[Route('/contact-us', name: 'contact-us')]
-    public function contactUs(Request $request, MailerService $mailer): Response
+    public function contactUs(Request $request, MessageBusInterface $bus): Response
     {
         $user = new User();
         $form = $this->createForm(HomeContactUsType::class, $user);
@@ -45,7 +47,7 @@ class HomeController extends AbstractController
             $userSubject = $form->get('subject')->getData();
             $userMessage = $form->get('message')->getData();
 
-            $mailer->sendContactUsEmail($user, $userName, $userSubject, $userMessage);
+            $bus->dispatch(new ContactUsEmail($user, $userName, $userSubject, $userMessage));
 
             $this->addFlash(
                 'success',

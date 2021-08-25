@@ -6,6 +6,7 @@ use App\Entity\Activity;
 use App\Entity\LicensePlate;
 use App\Form\ActivityBlockeeType;
 use App\Form\ActivityBlockerType;
+use App\Message\ReportEmailNotification;
 use App\Repository\LicensePlateRepository;
 use App\Service\ActivityService;
 use App\Service\LicensePlateService;
@@ -13,6 +14,7 @@ use App\Service\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/activity')]
@@ -28,7 +30,7 @@ class ActivityController extends AbstractController
     }
 
     #[Route('/new/ive_blocked_someone', name: 'activity/ive_blocked_someone', methods: ['GET', 'POST'])]
-    public function iveBlockedSomeone(Request $request, LicensePlateRepository $licensePlateRepository, LicensePlateService $licensePlateService, MailerService $mailer): Response
+    public function iveBlockedSomeone(Request $request, LicensePlateRepository $licensePlateRepository, LicensePlateService $licensePlateService, MailerService $mailer, MessageBusInterface $bus): Response
     {
         $activity = new Activity();
 
@@ -83,7 +85,8 @@ class ActivityController extends AbstractController
                 {
                     $blockerEntry = $licensePlateRepository->findOneBy(['license_plate' => $activity->getBlocker()]);
 
-                    $mailer->sendBlockerEmail($blockerEntry->getUser(), $blockeeEntry->getUser(), $blockerEntry->getLicensePlate());
+                    $bus->dispatch(new ReportEmailNotification($blockerEntry->getUser(), $blockeeEntry->getUser(), $blockerEntry->getLicensePlate(), 'blocker'));
+                    //$mailer->sendBlockerEmail($blockerEntry->getUser(), $blockeeEntry->getUser(), $blockerEntry->getLicensePlate());
 
                     $this->addFlash(
                         'info',
@@ -130,7 +133,7 @@ class ActivityController extends AbstractController
     }
 
     #[Route('/new/ive_been_blocked', name: 'activity/ive_been_blocked', methods: ['GET', 'POST'])]
-    public function iveBeenBlocked(Request $request, LicensePlateRepository $licensePlateRepository, LicensePlateService $licensePlateService, MailerService $mailer): Response
+    public function iveBeenBlocked(Request $request, LicensePlateRepository $licensePlateRepository, LicensePlateService $licensePlateService, MailerService $mailer, MessageBusInterface $bus): Response
     {
         $activity = new Activity();
 
@@ -184,7 +187,8 @@ class ActivityController extends AbstractController
                 if($blockerEntry->getUser()) {
                     $blockeeEntry = $licensePlateRepository->findOneBy(['license_plate' => $activity->getBlockee()]);
 
-                    $mailer->sendBlockerEmail($blockeeEntry->getUser(), $blockerEntry->getUser(), $blockeeEntry->getLicensePlate());
+                    $bus->dispatch(new ReportEmailNotification($blockerEntry->getUser(), $blockeeEntry->getUser(), $blockerEntry->getLicensePlate(), 'blockee'));
+                    //$mailer->sendBlockerEmail($blockeeEntry->getUser(), $blockerEntry->getUser(), $blockeeEntry->getLicensePlate());
 
                     $this->addFlash(
                         'info',
@@ -235,7 +239,7 @@ class ActivityController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$activity->getBlocker(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $activity->setStatus(3);
-            $entityManager->flush();
+            $entityManager->flush();;
 
             $message = 'The activity was marked as solved!';
             $this->addFlash(

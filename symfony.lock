@@ -94,6 +94,9 @@
     "laminas/laminas-code": {
         "version": "4.4.0"
     },
+    "monolog/monolog": {
+        "version": "2.3.2"
+    },
     "nikic/php-parser": {
         "version": "v4.10.5"
     },
@@ -120,6 +123,9 @@
         "files": [
             "./config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "symfony/amqp-messenger": {
+        "version": "v5.3.4"
     },
     "symfony/cache": {
         "version": "v5.3.0"
@@ -150,6 +156,9 @@
     },
     "symfony/doctrine-bridge": {
         "version": "v5.3.3"
+    },
+    "symfony/doctrine-messenger": {
+        "version": "v5.3.4"
     },
     "symfony/dotenv": {
         "version": "v5.3.0"
@@ -233,8 +242,38 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
+    "symfony/messenger": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "e9a414b113ceadbf4e52abe37bf8f1b443f06ccb"
+        },
+        "files": [
+            "./config/packages/messenger.yaml"
+        ]
+    },
     "symfony/mime": {
         "version": "v5.3.2"
+    },
+    "symfony/monolog-bridge": {
+        "version": "v5.3.4"
+    },
+    "symfony/monolog-bundle": {
+        "version": "3.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.7",
+            "ref": "a7bace7dbc5a7ed5608dbe2165e0774c87175fe6"
+        },
+        "files": [
+            "./config/packages/dev/monolog.yaml",
+            "./config/packages/prod/deprecations.yaml",
+            "./config/packages/prod/monolog.yaml",
+            "./config/packages/test/monolog.yaml"
+        ]
     },
     "symfony/options-resolver": {
         "version": "v5.3.0"
@@ -280,6 +319,9 @@
     },
     "symfony/proxy-manager-bridge": {
         "version": "v5.3.0"
+    },
+    "symfony/redis-messenger": {
+        "version": "v5.3.4"
     },
     "symfony/routing": {
         "version": "5.3",

@@ -5,12 +5,15 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\UserType;
+use App\Message\ContactUsEmail;
+use App\Message\RegisterEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\MailerService;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -48,7 +51,7 @@ class SecurityController extends AbstractController
      * @Route("/register", name="app_register")
      * @throws TransportExceptionInterface
      */
-    public function new(Request $request, UserPasswordHasherInterface $passwordHasher, MailerService $mail): Response
+    public function new(Request $request, UserPasswordHasherInterface $passwordHasher, MailerService $mail, MessageBusInterface $bus): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -65,7 +68,9 @@ class SecurityController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $mail->sendRegistrationEmail($user, $password);
+            $bus->dispatch(new RegisterEmail($user, $password));
+            //$mail->sendRegistrationEmail($user, $password);
+
             return $this->redirectToRoute('app_login');
         }
 

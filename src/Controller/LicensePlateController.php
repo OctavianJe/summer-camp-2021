@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\UnicodeString;
 
@@ -31,7 +32,7 @@ class LicensePlateController extends AbstractController
      * @throws TransportExceptionInterface
      */
     #[Route('/new', name: 'license-plate/new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ActivityService $activity, MailerService $mailer, LicensePlateRepository $licensePlateRepository, LicensePlateService $licensePlateService): Response
+    public function new(Request $request, ActivityService $activity, MailerService $mailer, LicensePlateRepository $licensePlateRepository, LicensePlateService $licensePlateService, MessageBusInterface $bus): Response
     {
         $licensePlate = new LicensePlate();
         $form = $this->createForm(LicensePlateType::class, $licensePlate);
